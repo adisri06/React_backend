@@ -7,7 +7,7 @@ const { response } = require('../app');
 // Example route
 router.get('/users', async (req, res) => {
     try {
-        const result = await pool.query('SELECT * FROM users');
+        const result = await pool.query('SELECT id, username, email, surname, age, height, weight FROM users');
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
@@ -30,16 +30,16 @@ router.get('/get_user_id/:username', async (req, res) => {
 });
 
 router.post('/addusers', async (req, res) => {
-  const { username, email, surname, age, height, weight } = req.body;
+  const { username, email, surname, age, height, weight, password } = req.body;
   console.log('details are', req.body)
   const query = `
-    INSERT INTO "users" (username, email, surname, age, height, weight)
-    VALUES ($1, $2, $3, $4, $5, $6)
+    INSERT INTO "users" (username, email, surname, age, height, weight, password)
+    VALUES ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *;
   `;
 
   try {
-    const result = await pool.query(query, [username, email, surname, age, height, weight]);
+    const result = await pool.query(query, [username, email, surname, age, height, weight, password]);
     res.status(201).json(result.rows[0]);
   } catch (err) {
     console.error(err);
