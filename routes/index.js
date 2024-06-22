@@ -61,7 +61,7 @@ console.log('id', id , password)
     const result = await pool.query(query, [id, password]);
     console.log(query , result)
     if (result.rows.length > 0) {
-      res.json({ message: 'Success', user: result.rows[0] });
+      res.status(200).json({ message: 'Success', user: result.rows[0] });
     } else {
       res.status(401).json({ message: 'Invalid credentials' });
     }
