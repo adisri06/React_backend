@@ -47,6 +47,30 @@ router.post('/addusers', async (req, res) => {
   }
 });
 
+router.post('/check_credentials', async (req, res) => {
+  const id = req.headers['id'];
+  const password = req.headers['password'];
+console.log('id', id , password)
+  if (!id || !password) {
+    return res.status(400).json({ message: 'Userid and password are required in headers' });
+  }
+
+  const query = 'SELECT * FROM "users" WHERE id = $1 AND password = $2';
+
+  try {
+    const result = await pool.query(query, [id, password]);
+    console.log(query , result)
+    if (result.rows.length > 0) {
+      res.json({ message: 'Success', user: result.rows[0] });
+    } else {
+      res.status(401).json({ message: 'Invalid credentials' });
+    }
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.get('/', (req, res) => {
   res.send('Hello, World!');
 });
